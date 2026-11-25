@@ -21,8 +21,12 @@ Write-Host "  RELATORIO FINAL - BIBLIOTECA DE MUSICAS" -ForegroundColor Cyan
 Write-Host "============================================================================" -ForegroundColor Cyan
 Write-Host ""
 
+$extensoesValidas = @('.mp3', '.wma', '.m4a', '.wav', '.flac', '.ogg', '.aac')
 $pastas = Get-ChildItem -Path $raiz -Directory | Where-Object { $_.Name -ne "Scripts" }
-$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { $_.DirectoryName -notlike "*\Scripts" }
+$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { 
+    $extensoesValidas -contains $_.Extension.ToLower() -and 
+    $_.DirectoryName -notlike "*\Scripts" 
+}
 
 $pastasNaoTitleCase = 0
 foreach ($p in $pastas) {

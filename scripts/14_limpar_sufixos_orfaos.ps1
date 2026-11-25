@@ -21,7 +21,11 @@ function Remover-SufixoOrfao {
 }
 
 # ---------- ARQUIVOS ----------
-$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { $_.DirectoryName -notlike "*\Scripts" } | Sort-Object FullName
+$extensoesValidas = @('.mp3', '.wma', '.m4a', '.wav', '.flac', '.ogg', '.aac')
+$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { 
+    $extensoesValidas -contains $_.Extension.ToLower() -and 
+    $_.DirectoryName -notlike "*\Scripts" 
+} | Sort-Object FullName
 
 $renomeados = 0
 $falharam = 0

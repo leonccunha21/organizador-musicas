@@ -16,8 +16,13 @@ function Converter-TitleCase {
 Write-Host "=== VERIFICACAO FINAL ===" -ForegroundColor Cyan
 Write-Host ""
 
+$extensoesValidas = @('.mp3', '.wma', '.m4a', '.wav', '.flac', '.ogg', '.aac')
 # Ignorar arquivos na raiz que não são músicas
-$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { $_.DirectoryName -notlike "*\Scripts" -and $_.DirectoryName -eq $raiz -eq $false }
+$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { 
+    $extensoesValidas -contains $_.Extension.ToLower() -and 
+    $_.DirectoryName -notlike "*\Scripts" -and 
+    $_.DirectoryName -ne $raiz 
+}
 
 $pastas = Get-ChildItem -Path $raiz -Directory | Where-Object { $_.Name -ne "Scripts" }
 $arquivosMusicas = $arquivos | Where-Object { $_.DirectoryName -ne $raiz }

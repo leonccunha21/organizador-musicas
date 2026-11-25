@@ -1,7 +1,7 @@
 # ============================================================================
 # SCRIPT 03 - Remover músicas duplicadas
 # - Normaliza nomes (minúsculo, sem acento, sem espaços extras)
-# - Agrupa arquivos com mesmo nome normalizado
+# - Agrupa arquivos com mesmo nome normalizado dentro de cada pasta
 # - Mantém 1 cópia, remove as duplicatas para economizar espaço
 # ============================================================================
 $raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
@@ -30,15 +30,20 @@ function Normalizar-Nome {
     }
     # Colapsa espaços e remove vazios
     $s = $s -replace '\s+', ''
-    return $s + $ext
+    return $s + $ext.ToLower()
 }
 
-$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Sort-Object FullName
+$extensoesValidas = @('.mp3', '.wma', '.m4a', '.wav', '.flac', '.ogg', '.aac')
+$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object {
+    $extensoesValidas -contains $_.Extension.ToLower() -and
+    $_.DirectoryName -notlike "*\Scripts"
+} | Sort-Object FullName
 
 $grupos = @{}
 
 foreach ($arquivo in $arquivos) {
-    $chave = Normalizar-Nome $arquivo.Name
+    # Agrupa por pasta + nome normalizado para evitar deletar músicas homônimas de outros cantores
+    $chave = Join-Path $arquivo.DirectoryName (Normalizar-Nome $arquivo.Name)
     if (-not $grupos.ContainsKey($chave)) {
         $grupos[$chave] = @()
     }
@@ -52,7 +57,7 @@ foreach ($chave in $grupos.Keys) {
     }
 }
 
-Write-Host "=== PR�-VISUALIZA��O DE DUPLICATAS ===" -ForegroundColor Cyan
+Write-Host "=== PRÉ-VISUALIZAÇÃO DE DUPLICATAS ===" -ForegroundColor Cyan
 Write-Host ""
 
 $totalRemover = 0
@@ -64,9 +69,11 @@ foreach ($chave in ($duplicatas.Keys | Sort-Object)) {
     $contador++
 
     if ($contador -le 30) {
-        Write-Host ("GRUPO: " + $chave) -ForegroundColor Yellow
+        $pastaNome = Split-Path (Split-Path $chave -Parent) -Leaf
+        $arquivoNome = Split-Path $chave -Leaf
+        Write-Host ("GRUPO: " + $arquivoNome + " [Pasta: " + $pastaNome + "]") -ForegroundColor Yellow
         for ($i = 0; $i -lt $membros.Count; $i++) {
-            $marcador = if ($i -eq 0) { "MANT�M" } else { "REMOVE" }
+            $marcador = if ($i -eq 0) { "MANTÉM" } else { "REMOVE" }
             $cor = if ($i -eq 0) { "Green" } else { "Red" }
             Write-Host ("    [" + $marcador + "] " + $membros[$i].Name) -ForegroundColor $cor
         }
@@ -75,7 +82,7 @@ foreach ($chave in ($duplicatas.Keys | Sort-Object)) {
 }
 
 if ($duplicatas.Count -gt 30) {
-    Write-Host ("... e mais " + ($duplicatas.Count - 30) + " grupos n�o mostrados") -ForegroundColor Gray
+    Write-Host ("... e mais " + ($duplicatas.Count - 30) + " grupos não mostrados") -ForegroundColor Gray
     Write-Host ""
 }
 
@@ -97,7 +104,7 @@ if (-not $modoPreview) {
         }
     }
     Write-Host ("Total removidos: " + $removidos) -ForegroundColor Cyan
-    Write-Host "Duplicatas conclu�das." -ForegroundColor Green
+    Write-Host "Duplicatas concluídas." -ForegroundColor Green
 } else {
-    Write-Host "Para executar de verdade, defina \$modoPreview = $false" -ForegroundColor Gray
+    Write-Host "Para executar de verdade, defina `$modoPreview = `$false" -ForegroundColor Gray
 }

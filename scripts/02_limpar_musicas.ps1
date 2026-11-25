@@ -3,10 +3,15 @@
 # - Remove número no início (ex: "01-", "02 -", "14 -")
 # - Remove tudo depois do primeiro hífen (fica só o nome da música)
 # - Trata conflitos adicionando sufixo (1), (2)...
+# - Preserva a extensão original dos arquivos (.mp3, .flac, etc.)
 # ============================================================================
 $raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
-$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Sort-Object FullName
+$extensoesValidas = @('.mp3', '.wma', '.m4a', '.wav', '.flac', '.ogg', '.aac')
+$arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object {
+    $extensoesValidas -contains $_.Extension.ToLower() -and
+    $_.DirectoryName -notlike "*\Scripts"
+} | Sort-Object FullName
 
 $renomeados = 0
 $semMudanca = 0
@@ -15,20 +20,25 @@ $falharam = 0
 foreach ($arquivo in $arquivos) {
     $nomeAntigo = $arquivo.Name
     $diretorio = $arquivo.DirectoryName
-    $novo = $nomeAntigo
+    $ext = $arquivo.Extension
+    $nomeBase = [System.IO.Path]::GetFileNameWithoutExtension($nomeAntigo)
+
+    $novoBase = $nomeBase
 
     # 1. Remove número no início + hífen
-    $novo = $novo -replace '^\s*\d+\s*[-]\s*', ''
+    $novoBase = $novoBase -replace '^\s*\d+\s*[-]\s*', ''
     # 2. Remove número no início + espaço
-    $novo = $novo -replace '^\s*\d+\s+', ''
+    $novoBase = $novoBase -replace '^\s*\d+\s+', ''
     # 3. Remove tudo depois do primeiro hífen (fica só o nome da música)
-    if ($novo -match '-') {
-        $novo = ($novo -split '-', 2)[0]
+    if ($novoBase -match '-') {
+        $novoBase = ($novoBase -split '-', 2)[0]
     }
     # 4. Limpa bordas e espaços múltiplos
-    $novo = $novo -replace '^[\s\-._]+|[\s\-._]+$', ''
-    $novo = $novo -replace '\s+', ' '
-    $novo = $novo.Trim()
+    $novoBase = $novoBase -replace '^[\s\-._]+|[\s\-._]+$', ''
+    $novoBase = $novoBase -replace '\s+', ' '
+    $novoBase = $novoBase.Trim()
+
+    $novo = "$novoBase$ext"
 
     if ($novo -eq $nomeAntigo) {
         $semMudanca++
@@ -39,9 +49,7 @@ foreach ($arquivo in $arquivos) {
     $suffix = 1
 
     while (Test-Path -LiteralPath $caminhoFinal) {
-        $semExt = [System.IO.Path]::GetFileNameWithoutExtension($novo)
-        $ext = [System.IO.Path]::GetExtension($novo)
-        $caminhoFinal = Join-Path $diretorio ($semExt + " (" + $suffix + ")" + $ext)
+        $caminhoFinal = Join-Path $diretorio ($novoBase + " (" + $suffix + ")" + $ext)
         $suffix++
     }
 
