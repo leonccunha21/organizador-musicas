@@ -1,0 +1,25 @@
+# ============================================================================
+# .gitignore - Organizador de Biblioteca Musical
+# ============================================================================
+
+# Arquivos de áudio (binários grandes - não versionar)
+*.mp3
+*.wma
+*.m4a
+*.mp4
+*.wav
+*.flac
+*.ogg
+*.aac
+
+# Arquivos temporários do Windows
+Thumbs.db
+desktop.ini
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# Pasta de scripts pode ser versionada, mas não os arquivos de música
+!scripts/
