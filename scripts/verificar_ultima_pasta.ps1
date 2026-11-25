@@ -1,4 +1,4 @@
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 function Converter-TitleCase {
     param($texto)

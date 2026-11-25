@@ -1,4 +1,4 @@
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 # Remover pasta em maiúsculas "PISEIRO PARED...O"
 $pastas = Get-ChildItem -Path $raiz -Directory | Where-Object { $_.Name -like "PISEIRO*" }

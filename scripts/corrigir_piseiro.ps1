@@ -1,4 +1,4 @@
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 $pasta = Get-ChildItem -Path $raiz -Directory | Where-Object { $_.Name -like "PISEIRO*" } | Select-Object -First 1
 if ($pasta) {
     Write-Host ("Encontrada: " + $pasta.Name) -ForegroundColor Yellow

@@ -4,7 +4,7 @@
 # - Pastas: "X (1)" -> "X" se "X" não existir
 # - Ignora pasta Scripts
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 function Remover-SufixoOrfao {
     param($nome)

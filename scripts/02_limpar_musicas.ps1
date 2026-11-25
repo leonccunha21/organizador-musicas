@@ -4,7 +4,7 @@
 # - Remove tudo depois do primeiro hífen (fica só o nome da música)
 # - Trata conflitos adicionando sufixo (1), (2)...
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 $arquivos = Get-ChildItem -Path $raiz -Recurse -File | Sort-Object FullName
 

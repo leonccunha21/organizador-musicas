@@ -3,7 +3,7 @@
 # - Aplica Title Case mesmo se já existir, adicionando (1), (2)...
 # - Ignora pasta Scripts
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 function Converter-TitleCase {
     param($texto)

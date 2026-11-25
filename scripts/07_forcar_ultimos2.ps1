@@ -1,4 +1,4 @@
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 # Busca os 2 arquivos específicos
 $a1 = Get-ChildItem -Path $raiz -Recurse -File -Filter "19-Can't*" | Select-Object -First 1

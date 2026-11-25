@@ -3,7 +3,7 @@
 # - "Abelvolks (1)" -> "Abelvolks" se "Abelvolks" não existir
 # - Ignora pasta Scripts
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 $pastas = Get-ChildItem -Path $raiz -Directory | Where-Object { $_.Name -ne "Scripts" -and $_.Name -match '\(\d+\)\s*$' } | Sort-Object Name
 

@@ -3,7 +3,7 @@
 # - Trata os 2 casos específicos: "19-..." e "048 - ..."
 # - Ignora pasta Scripts
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 $arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { $_.DirectoryName -notlike "*\Scripts" } | Where-Object { $_.Name -match '^\s*(\d+)\s*[-]\s*' } | Sort-Object FullName
 

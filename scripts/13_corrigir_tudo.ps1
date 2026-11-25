@@ -3,7 +3,7 @@
 # - Pastas: Title Case com comparação case-sensitive (-ceq)
 # - Arquivos: remove duplicatas (ex: "X.mp3" e "X (1).mp3" -> mantém 1)
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 function Converter-TitleCase {
     param($texto)

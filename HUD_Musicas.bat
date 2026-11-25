@@ -60,6 +60,7 @@ echo   [00] Sair
 echo.
 echo ============================================================================
 
+set "OPCAO="
 set /p OPCAO=Escolha uma opcao: 
 
 if "%OPCAO%"=="1"   goto EXEC_TUDO
@@ -82,10 +83,11 @@ if "%OPCAO%"=="17"  goto VERIFICAR
 if "%OPCAO%"=="18"  goto ABRIR_MUSICAS
 if "%OPCAO%"=="19"  goto ABRIR_SCRIPTS
 if "%OPCAO%"=="20"  goto ABRIR_README
+if "%OPCAO%"=="0"   goto SAIR
 if "%OPCAO%"=="00"  goto SAIR
 
 echo.
-echo Opcao invalida! Pressione qualquer tecla para voltar...
+echo Opcao invalida. Pressione qualquer tecla para voltar...
 pause >nul
 goto MENU
 

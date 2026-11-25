@@ -5,7 +5,7 @@
 # - Remove tudo depois do primeiro hífen (fica só o nome do cantor)
 # - Mescla pastas com mesmo nome em 1 só
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 $modoPreview = $false   # $true = só mostra o que faria, $false = executa
 
 $itens = Get-ChildItem -Path $raiz -Directory | Sort-Object Name
@@ -101,7 +101,7 @@ if (-not $modoPreview) {
                     if (-not (Test-Path $destinoDir)) {
                         New-Item -ItemType Directory -Path $destinoDir | Out-Null
                     }
-                    if (Test-Path $destino -LiteralPath) {
+                    if (Test-Path -LiteralPath $destino) {
                         $ext = [System.IO.Path]::GetExtension($_.Name)
                         $semExt = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
                         $destino = Join-Path $destinoDir ($semExt + "_dup" + $ext)

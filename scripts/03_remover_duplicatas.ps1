@@ -4,7 +4,7 @@
 # - Agrupa arquivos com mesmo nome normalizado
 # - Mantém 1 cópia, remove as duplicatas para economizar espaço
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 $modoPreview = $false  # $true = só mostra o que faria, $false = executa
 
 function Normalizar-Nome {
@@ -23,7 +23,7 @@ function Normalizar-Nome {
         'ú'='u'; 'û'='u'; 'ü'='u';
         'ç'='c';
         'ñ'='n';
-        ' '=''; '-'=''; '_'=''; '('=''; ')'=''; '['=''; ']'=''; '.'=''; ','=''; "'"=''; '’'=''; '`'=''; '´'=''; '~'=''
+        ' '=''; '-'=''; '_'=''; '('=''; ')'=''; '['=''; ']'=''; '.'=''; ','=''; "'"=''; "’"=''; '`'=''; '´'=''; '~'=''
     }
     foreach ($k in $map.Keys) {
         $s = $s -replace [regex]::Escape($k), $map[$k]

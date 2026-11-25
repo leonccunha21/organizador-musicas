@@ -4,7 +4,7 @@
 # - Ignora a pasta Scripts
 # - Trata conflitos com sufixo (1), (2)...
 # ============================================================================
-$raiz = "D:\Musicas"
+$raiz = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 $arquivos = Get-ChildItem -Path $raiz -Recurse -File | Where-Object { $_.DirectoryName -notlike "*\Scripts" } | Sort-Object FullName
 

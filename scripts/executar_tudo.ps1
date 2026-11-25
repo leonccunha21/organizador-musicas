@@ -2,7 +2,8 @@
 # SCRIPT MESTRE - Executar toda a organização
 # Ordem correta: 01 -> 15
 # ============================================================================
-$raiz = "D:\Musicas\Scripts"
+$raiz = $PSScriptRoot
+$pastaMusicas = if ($env:MUSICA_RAIZ) { $env:MUSICA_RAIZ } else { "D:\Musicas" }
 
 $scripts = @(
     "01_limpar_pastas.ps1",
@@ -23,7 +24,7 @@ $scripts = @(
 )
 
 Write-Host "=== SCRIPT MESTRE DE ORGANIZAÇÃO ===" -ForegroundColor Cyan
-Write-Host "Pasta: D:\Musicas"
+Write-Host "Pasta: $pastaMusicas"
 Write-Host ""
 
 foreach ($s in $scripts) {
