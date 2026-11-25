@@ -1,16 +1,18 @@
-# 🎵 Organizador de Biblioteca Musical
+# 🎵 Organizador de Arquivos, Músicas e Jogos (PS2 / OPL)
 
-Projeto de automação para organizar pastas e arquivos de música no Windows usando PowerShell.
+Projeto de automação para organizar pastas e padronizar nomes de arquivos no Windows usando PowerShell e um Hub interativo em Batch (`.bat`).
 
 ## 📁 Estrutura do Projeto
 
 ```
 organizador-musicas/
-├── HUD_Musicas.bat          # Hub interativo (.bat)
-├── README.md                # Documentação
-├── .gitignore               # Ignora arquivos de áudio no Git
-└── scripts/                 # Scripts PowerShell
-    ├── executar_tudo.ps1    # Script mestre (executa todos em ordem)
+├── HUD_Musicas.bat               # Hub interativo no terminal (.bat)
+├── README.md                     # Documentação
+├── .gitignore                    # Ignora arquivos binários pesados de áudio
+├── .gitattributes                # Garante quebras de linha CRLF no Windows
+└── scripts/                      # Scripts PowerShell
+    ├── padronizar_title_case.ps1 # Padronizador geral de Title Case (Jogos/Músicas)
+    ├── executar_tudo.ps1         # Script mestre de música (executa 01 -> 15 em ordem)
     ├── 01_limpar_pastas.ps1
     ├── 02_limpar_musicas.ps1
     ├── 03_remover_duplicatas.ps1
@@ -35,43 +37,50 @@ organizador-musicas/
     └── verificar_ultima_pasta.ps1
 ```
 
-## 🚀 Como usar
+## 🚀 Como Usar
 
-### Opção 1: Hub interativo (recomendado)
-Dê duplo clique em `HUD_Musicas.bat` para acessar um menu interativo.
+### Opção 1: Hub Interativo (Recomendado)
+Dê um duplo clique no arquivo `HUD_Musicas.bat`. O menu interativo exibirá:
+* **[0] Alterar pasta de trabalho**: Alterne a qualquer momento entre pastas (ex: `D:\Jogos\PS2\OPL\DVD`, `D:\Musicas` ou qualquer outro diretório).
+* **[1] Padronizar Nomes para Title Case**: Converte todos os arquivos para Title Case (primeira letra maiúscula, resto minúsculo, removendo espaços duplicados e mantendo IDs de OPL intactos).
+* **[2] Simular Padronização (Preview)**: Visualiza o que seria renomeado sem alterar nada.
+* **[3] Executar TODOS os scripts de música (01 -> 15)**: Executa a faxina completa da biblioteca musical.
 
 ### Opção 2: Via PowerShell
-```powershell
-# Defina o caminho da sua pasta de música antes de executar
-$env:MUSICA_RAIZ = "D:\Musicas"
 
+Para padronizar qualquer pasta (ex: jogos PS2 OPL):
+```powershell
+# Executa a padronização em Title Case
+powershell -ExecutionPolicy Bypass -File "scripts\padronizar_title_case.ps1" -caminho "D:\Jogos\PS2\OPL\DVD"
+
+# Modo simulação (Preview)
+powershell -ExecutionPolicy Bypass -File "scripts\padronizar_title_case.ps1" -caminho "D:\Jogos\PS2\OPL\DVD" -Preview
+```
+
+Para a biblioteca musical:
+```powershell
+$env:MUSICA_RAIZ = "D:\Musicas"
 powershell -ExecutionPolicy Bypass -File "scripts\executar_tudo.ps1"
 ```
 
-## 📋 O que os scripts fazem
+## 📋 Resumo dos Scripts
 
 | Script | Função |
-|--------|--------|
-| 01 | Remove números iniciais, anos finais e tudo após hífen nas pastas. Mescla pastas duplicadas. |
-| 02 | Remove números iniciais e tudo após hífen nos nomes de músicas. |
-| 03 | Detecta e remove músicas duplicadas (mesmo nome com acentos diferentes). |
-| 04-07 | Limpeza de números restantes em diversos padrões. |
-| 08-11 | Aplica Title Case (primeira letra maiúscula, resto minúsculo). |
-| 12-13 | Corrige pastas Title Case e remove duplicatas restantes. |
-| 14-15 | Remove sufixos órfãos "(n)" quando não há conflito. |
-
-## 📊 Resultado esperado
-
-- **Pastas**: Apenas o nome do artista, em Title Case (ex: `Ze Neto E Cristiano`)
-- **Músicas**: Apenas o nome da música, em Title Case (ex: `Me Caiu Tão Bem.mp3`)
-- **Sem**: Números iniciais, anos finais, sufixos duplicados, nomes em maiúsculas totais
+|---|---|
+| `padronizar_title_case.ps1` | Padroniza nomes para Title Case, preserva IDs do OPL/PS2 (`SLUS_xxx.xx.`), remove espaços extras e renomeia com segurança no Windows NTFS. |
+| `01_limpar_pastas.ps1` | Remove números iniciais, anos finais e sufixos nas pastas de artistas. Mescla pastas repetidas. |
+| `02_limpar_musicas.ps1` | Remove números e prefixos dos nomes das faixas, preservando a extensão original. |
+| `03_remover_duplicatas.ps1` | Detecta e remove músicas duplicadas dentro de cada pasta de cantor. |
+| `04` a `07` | Limpeza fina de números restantes em diversos formatos. |
+| `08` a `11` | Padronização em Title Case para músicas. |
+| `12` e `13` | Correção de pastas para Title Case e remoção de duplicatas finais. |
+| `14` e `15` | Remoção de sufixos órfãos `(1)` quando não há conflito de arquivo. |
 
 ## ⚠️ Avisos
 
-- Os scripts renomeiam e excluem arquivos. Faça backup antes de executar.
-- O script 03 remove duplicatas permanentemente.
-- Execute em ordem: 01 → 15.
-- Antes de executar, edite o `HUD_Musicas.bat` ou defina a variável `MUSICA_RAIZ` com o caminho da sua pasta de músicas.
+- Faça backup dos seus arquivos antes de executar operações em lote.
+- O script `03` remove duplicatas permanentemente.
+- Ao usar o Hub (`HUD_Musicas.bat`), confira sempre a pasta exibida no topo do menu ou use a opção `[0]` para alterá-la.
 
 ## 📄 Licença
 

@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 # SCRIPT DE PADRONIZAÇÃO DE NOMES (TITLE CASE)
 # - Converte nomes de arquivos para Title Case (primeira letra maiúscula, resto minúsculo)
 # - Preserva IDs de disco do OPL / PS2 (ex: SLUS_xxx.xx., SLES_xxx.xx.)
